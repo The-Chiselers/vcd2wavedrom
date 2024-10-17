@@ -10,7 +10,7 @@ use std::collections::{HashMap, HashSet};
 use serde::{Deserialize, Serialize};
 
 use crate::{config, wavedrom};
-use crate::vcd::{BinaryUnit, StringUnit, WaveUnit};
+use crate::vcd::{WaveUnit};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Wavedrom {
@@ -19,21 +19,20 @@ pub struct Wavedrom {
 
 impl Wavedrom {
     pub fn from_vcd(vcd: &crate::vcd::VCD, config: &crate::config::Config) -> Wavedrom {
-        let mut vcd_signals: std::collections::HashMap<String, &crate::vcd::VCD> = std::collections::HashMap::new();
-        let config_signals: &std::collections::HashMap<String, config::Signal> = &config.signals;
+        let mut vcd_signals: Vec<(String, &crate::vcd::VCD)> = Vec::new();
+        let config_signals: &Vec<config::Signal> = &config.signals;
 
-        for (signal_name, signal) in config_signals {
+        for (signal) in config_signals {
+			let signal_name = &signal.name;
             let vcd_signal: &crate::vcd::VCD = vcd.find_signal(&signal_name).expect("Could not find signal in VCD");
-			// if signal_name in config.clocks, then get Polarity from the signal, replace all chars with . and the first with either N or P
-
-			vcd_signals.insert(signal_name.clone(), vcd_signal);
+			vcd_signals.push((signal_name.clone(), vcd_signal));
         }
 
         let mut wavedrom_signals: std::collections::HashMap<String, wavedrom::Signal> = std::collections::HashMap::new();
-        for (signal_name, vcd_signal) in vcd_signals {
+        for (index, (signal_name, vcd_signal)) in vcd_signals.iter().enumerate() {
 			// println!("Signal name: {signal_name}\n");
             let wave_vec: Vec<crate::vcd::WaveUnit> = vcd_signal.read_to_array(config.time_start.unwrap(), config.time_end.unwrap()).expect("Could not read signal to array");
-            let mut signal: wavedrom::Signal = wavedrom::Signal::new(signal_name.clone());
+            let mut signal: wavedrom::Signal = wavedrom::Signal::new(signal_name.clone(), index);
 			for wave_unit in wave_vec {
 				signal.add_wave_unit(wave_unit);
 			}
@@ -46,24 +45,27 @@ impl Wavedrom {
 			if clocks.contains_key(&signal_name) {
 				let mut new_clock_wave: String = String::new();
 				// peak first char, if 1 then P, else N
-				if signal.wave.chars().next().unwrap() == '1' {
-					new_clock_wave.push('P');
-				} else {
-					new_clock_wave.push('N');
-				}
+				// if signal.wave.chars().next().unwrap() == '1' {
+				// 	new_clock_wave.push('P');
+				// } else {
+				// 	new_clock_wave.push('N');
+				// }
+				new_clock_wave.push('P');
 				for _ in 1..signal.wave.len() {
 					new_clock_wave.push('.');
 				}
 				let new_signal = wavedrom::Signal {
 					name: signal_name.clone(),
 					wave: new_clock_wave,
-					data: signal.data.clone()
+					data: signal.data.clone(),
+					order: signal.order,
 				};
 				wavedrom_signal_vec.push(new_signal);
 			} else {
 				wavedrom_signal_vec.push(signal);
 			}
 		}
+		wavedrom_signal_vec.sort_by(|a, b| a.order.cmp(&b.order));
 		Wavedrom {
 			signal: wavedrom_signal_vec
 		}
@@ -76,6 +78,7 @@ pub struct Signal {
 	pub wave: String,
 	#[serde(skip_serializing_if = "Option::is_none")]
 	pub data: Option<Vec<String>>,
+	pub order: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -85,44 +88,33 @@ pub enum WaveType {
 }
 
 impl Signal {
-	pub fn new(name: String) -> Signal {
+	pub fn new(name: String, order: usize) -> Signal {
 		Signal {
 			name,
 			wave: String::new(),
-			data: None
+			data: None,
+			order,
 		}
 	}
 
 	pub fn add_wave_unit(&mut self, wave_unit: WaveUnit) {
 		match wave_unit {
-			WaveUnit::Binary(binary_wave_unit) => {
-				match binary_wave_unit {
-					BinaryUnit::Bool(bool_value) => {
-						if bool_value {
-							self.wave.push('1');
-						} else {
-							self.wave.push('0');
-						}
-					}
-					BinaryUnit::Same => {
-						self.wave.push('.');
-					}
+			WaveUnit::Binary(bool_value) => {
+				if bool_value {
+					self.wave.push('1');
+				} else {
+					self.wave.push('0');
 				}
 			}
-			WaveUnit::String(string_wave_unit) => {
-				match string_wave_unit {
-					StringUnit::String(string_value) => {
-						let string_value_as_str: String = string_value.to_string();
-						if self.data.is_none() {
-							self.data = Some(Vec::new());
-						}
-						self.data.as_mut().unwrap().push(string_value_as_str);
-						self.wave.push('=');
-					}
-					StringUnit::Same => {
-						self.wave.push('.');
-					}
+			WaveUnit::Hex(hex_string) => {
+				if self.data.is_none() {
+					self.data = Some(Vec::new());
 				}
+				self.wave.push('=');
+				self.data.as_mut().unwrap().push(hex_string);
+			}
+			WaveUnit::Same => {
+				self.wave.push('.');
 			}
 		}
 	}

@@ -1,62 +1,62 @@
 {
-    "signals": {
-        "clock": {
-            "rename": "clock",
-            "display": "binary"
+    "signals": [
+        {
+            "name": "clock",
+            "rename": "clock"
         },
-        "reset": {
-            "rename": "reset",
-            "display": "binary"
+        {
+            "name": "reset",
+            "rename": "reset"
         },
-        "io_apb_PSEL": {
-            "rename": "PSEL",
-            "display": "binary"
+        {
+            "name": "io_apb_PSEL",
+            "rename": "PSEL"
         },
-        "io_apb_PENABLE": {
-            "rename": "PENABLE",
-            "display": "binary"
+        {
+            "name": "io_apb_PENABLE",
+            "rename": "PENABLE"
         },
-        "io_apb_PWRITE": {
-            "rename": "PWRITE",
-            "display": "binary"
+        {
+            "name": "io_apb_PWRITE",
+            "rename": "PWRITE"
         },
-        "io_apb_PADDR": {
-            "rename": "PADDR",
-            "display": "binary"
+        {
+            "name": "io_apb_PADDR",
+            "rename": "PADDR"
         },
-        "io_apb_PWDATA": {
-            "rename": "PWDATA",
-            "display": "binary"
+        {
+            "name": "io_apb_PWDATA",
+            "rename": "PWDATA"
         },
-        "io_apb_PRDATA": {
-            "rename": "PWRITE",
-            "display": "binary"
+        {
+            "name": "io_apb_PRDATA",
+            "rename": "PWRITE"
         },
-        "io_apb_PREADY": {
-            "rename": "PREADY",
-            "display": "binary"
+        {
+            "name": "io_apb_PREADY",
+            "rename": "PREADY"
         },
-        "io_apb_PSLVERR": {
-            "rename": "PSLVERR",
-            "display": "binary"
+        {
+            "name": "io_apb_PSLVERR",
+            "rename": "PSLVERR"
         },
-        "io_in": {
-            "rename": "in",
-            "display": "binary"
+        {
+            "name": "io_in",
+            "rename": "in"
         },
-        "io_out": {
-            "rename": "out",
-            "display": "binary"
+        {
+            "name": "io_out",
+            "rename": "out"
         },
-        "io_enable": {
-            "rename": "enable",
-            "display": "binary"
+        {
+            "name": "io_enable",
+            "rename": "enable"
         },
-        "io_irq": {
-            "rename": "irq",
-            "display": "binary"
+        {
+            "name": "io_irq",
+            "rename": "irq"
         }
-    },
+    ],
     "clocks": {
         "clock": "clock"
     },

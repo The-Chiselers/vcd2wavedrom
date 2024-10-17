@@ -68,9 +68,9 @@ impl VCD {
         let mut prev_time: usize = 0;
 
 		let name = &self.name;
-		if name == "clock" {
-			println!("Found clock\n");
-		}
+		// if name == "clock" {
+		// 	println!("Found clock\n");
+		// }
 
         if self.data.is_none() {
             return None;
@@ -95,19 +95,19 @@ impl VCD {
         let mut current_time: usize = start_time;
         let mut next_index: usize = input_data_index + 1;
 		if (input_data_bus_size == 1) {
-			data.push(WaveUnit::Binary(BinaryUnit::Bool(current_value == "1")));
+			data.push(WaveUnit::Binary(current_value == "1"));
 		}
 		else {
-			data.push(WaveUnit::String(StringUnit::String(bin_string_to_bin_value(&current_value).unwrap())));
+			data.push(WaveUnit::Hex(bin_string_to_hex_string(&current_value).unwrap()));
 		}
 		current_time += 1;
         while (current_time < end_time) {
 			if (next_index >= input_data.len()) {
 				if (input_data_bus_size == 1) {
-					data.push(WaveUnit::Binary(BinaryUnit::Same));
+					data.push(WaveUnit::Same);
 				}
 				else {
-					data.push(WaveUnit::String(StringUnit::Same));
+					data.push(WaveUnit::Hex(bin_string_to_hex_string(&current_value).unwrap()));
 				}
 				current_time += 1;
 				continue;
@@ -118,22 +118,17 @@ impl VCD {
 				current_value = next_value.clone();
 				// data.push(current_value.clone());
 				if (input_data_bus_size == 1) {
-					data.push(WaveUnit::Binary(BinaryUnit::Bool(current_value == "1")));
+					data.push(WaveUnit::Binary(current_value == "1"));
 				}
 				else {
-					data.push(WaveUnit::String(StringUnit::String(bin_string_to_bin_value(&current_value).unwrap())));
+					data.push(WaveUnit::Hex(bin_string_to_hex_string(&current_value).unwrap()));
 				}
 				current_time += 1;
 				next_index += 1;
 				continue;
 			}
 			if (current_time < next_time) {
-				if (input_data_bus_size == 1) {
-					data.push(WaveUnit::Binary(BinaryUnit::Same));
-				}
-				else {
-					data.push(WaveUnit::String(StringUnit::Same));
-				}
+				data.push(WaveUnit::Same);
 				current_time += 1;
 				continue;
 			}
@@ -160,116 +155,30 @@ pub enum VCDTypeInner {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum WaveUnit {
-	Binary(BinaryUnit),
-	String(StringUnit),
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub enum BinaryUnit {
-	Bool(bool),
+	Binary(bool),
+	Hex(String),
 	Same
 }
 
-impl Display for BinaryUnit {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		match self {
-			BinaryUnit::Bool(value) => {
-				if *value {
-					write!(f, "1")
-				}
-				else {
-					write!(f, "0")
-				}
+
+
+fn bin_string_to_hex_string(string_in: &str) -> Option<String> {
+	let mut string = String::new();
+	let mut index = 1;
+	while index < string_in.len() {
+		let mut value: u8 = 0;
+		for i in 0..4 {
+			if index >= string_in.len() {
+				break;
 			}
-			BinaryUnit::Same => {
-				write!(f, ".")
+			if string_in.chars().nth(index).unwrap() == '1' {
+				value += 1 << i;
+			} else if string_in.chars().nth(index).unwrap() != '0' {
+				return None;
 			}
+			index += 1;
 		}
+		string.push_str(&format!("{:X}", value));
 	}
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub enum StringUnit {
-	String(StringValue),
-	Same
-}
-
-impl Display for StringUnit {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		match self {
-			StringUnit::String(value) => {
-				write!(f, "{}", value)
-			}
-			StringUnit::Same => {
-				write!(f, ".")
-			}
-		}
-	}
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct StringValue {
-	pub width: usize,
-	pub values: Vec<bool>
-}
-
-impl Display for StringValue {
-	// prints as bin string
-	// fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-	// 	let mut result = String::new();
-	// 	for value in &self.values {
-	// 		if *value {
-	// 			result.push('1');
-	// 		}
-	// 		else {
-	// 			result.push('0');
-	// 		}
-	// 	}
-	// 	write!(f, "{}", result)
-	// }
-
-	// prints as hex string
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		let mut result = String::new();
-		let mut index = 0;
-		while index < self.width {
-			let mut value: u8 = 0;
-			for i in 0..4 {
-				if index >= self.width {
-					break;
-				}
-				if self.values[index] {
-					value += 1 << i;
-				}
-				index += 1;
-			}
-			result.push_str(&format!("{:X}", value));
-		}
-		write!(f, "0x{}", result)
-	}
-}
-
-fn bin_string_to_bin_value(string: &str) -> Option<StringValue> {
-	let mut values: Vec<bool> = Vec::new();
-	let mut width: usize = 0;
-	for (index, c) in string.chars().enumerate() {
-		if c == 'b' && index == 0 {
-			continue;
-		}
-		if c == '1' {
-			values.push(true);
-			width += 1;
-		}
-		else if c == '0'{
-			values.push(false);
-			width += 1;
-		}
-		else {
-			return None;
-		}
-	}
-	Some(StringValue {
-		width,
-		values
-	})
+	Some(format!("0x{}", string))
 }

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    pub signals: HashMap<String, Signal>,
+    pub signals: Vec<Signal>,
 	pub clocks: HashMap<String, String>,
     pub time_start: Option<usize>,
     pub time_end: Option<usize>,
@@ -24,6 +24,7 @@ impl Config {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Signal {
+	pub name: String,
     pub rename: String,
 }
 
