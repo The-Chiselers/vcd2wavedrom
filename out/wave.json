@@ -2,92 +2,89 @@
   "signal": [
     {
       "name": "clock",
-      "wave": "P.............",
+      "wave": "P.....................",
       "order": 0
     },
     {
       "name": "reset",
-      "wave": "0.............",
+      "wave": "1...0.................",
       "order": 1
     },
     {
-      "name": "io_apb_PSEL",
-      "wave": "0...1.....0...",
+      "name": "PSEL",
+      "wave": "0...1...0...1.....0...",
       "order": 2
     },
     {
-      "name": "io_apb_PENABLE",
-      "wave": "0.....1...0...",
+      "name": "PENABLE",
+      "wave": "0.....1.0.....1...0...",
       "order": 3
     },
     {
-      "name": "io_apb_PWRITE",
-      "wave": "1.....0.......",
-      "order": 4
-    },
-    {
-      "name": "io_apb_PADDR",
-      "wave": "=.............",
+      "name": "PADDR",
+      "wave": "=.....................",
       "data": [
         "0x0000"
       ],
       "order": 5
     },
     {
-      "name": "io_apb_PWDATA",
-      "wave": "=.............",
+      "name": "PWDATA",
+      "wave": "=.....=...............",
       "data": [
-        "0xAB700634"
+        "0x00000000",
+        "0x5DE006C2"
       ],
       "order": 6
     },
     {
-      "name": "io_apb_PRDATA",
-      "wave": "=.....=...=...",
+      "name": "PWRITE",
+      "wave": "=.............=...=...",
       "data": [
         "0x00000000",
-        "0xAB700634",
+        "0x5DE006C2",
         "0x00000000"
       ],
       "order": 7
     },
     {
-      "name": "io_apb_PREADY",
-      "wave": "0.....1...0...",
+      "name": "PREADY",
+      "wave": "0.....1.0.....1...0...",
       "order": 8
     },
     {
-      "name": "io_apb_PSLVERR",
-      "wave": "0.............",
+      "name": "PSLVERR",
+      "wave": "0.....................",
       "order": 9
     },
     {
-      "name": "io_in",
-      "wave": "=.............",
+      "name": "in",
+      "wave": "=.....................",
       "data": [
         "0x00000000"
       ],
       "order": 10
     },
     {
-      "name": "io_out",
-      "wave": "=.............",
+      "name": "out",
+      "wave": "=.....................",
       "data": [
         "0x00000000"
       ],
       "order": 11
     },
     {
-      "name": "io_enable",
-      "wave": "=.............",
+      "name": "enable",
+      "wave": "=......=..............",
       "data": [
-        "0xAB700634"
+        "0x00000000",
+        "0x5DE006C2"
       ],
       "order": 12
     },
     {
-      "name": "io_irq",
-      "wave": "0.............",
+      "name": "irq",
+      "wave": "0.....................",
       "order": 13
     }
   ]

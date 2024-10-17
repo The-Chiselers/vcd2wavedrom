@@ -60,6 +60,6 @@
     "clocks": {
         "clock": "clock"
     },
-    "time_start": 8,
+    "time_start": 0,
     "time_end": 22
 }

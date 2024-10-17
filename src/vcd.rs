@@ -1,5 +1,6 @@
 use std::fmt::Display;
 use serde::{Deserialize, Serialize};
+use serde::de::Unexpected::Char;
 
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -164,21 +165,32 @@ pub enum WaveUnit {
 
 fn bin_string_to_hex_string(string_in: &str) -> Option<String> {
 	let mut string = String::new();
-	let mut index = 1;
-	while index < string_in.len() {
+	let mut index = 0;
+	let mut string_in_trimmed = string_in;
+	if string_in_trimmed.starts_with("b") {
+		string_in_trimmed = &string_in[1..];
+	}
+	// reverse
+	let string_in_trimmed = &string_in_trimmed.chars().rev().collect::<String>();
+
+	// println!("string_in: {}", string_in);
+	while index < string_in_trimmed.len() {
 		let mut value: u8 = 0;
 		for i in 0..4 {
-			if index >= string_in.len() {
+			if index >= string_in_trimmed.len() {
 				break;
 			}
-			if string_in.chars().nth(index).unwrap() == '1' {
+			// println!("chars: {:?}", &string_in_trimmed.chars().collect::<Vec<char>>()[index..]);
+			let char_n: char = string_in_trimmed.chars().nth(index).unwrap();
+			if char_n == '1' {
 				value += 1 << i;
-			} else if string_in.chars().nth(index).unwrap() != '0' {
+			} else if char_n != '0' {
 				return None;
 			}
 			index += 1;
 		}
 		string.push_str(&format!("{:X}", value));
 	}
+	let string = string.chars().rev().collect::<String>();
 	Some(format!("0x{}", string))
 }
