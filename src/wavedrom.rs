@@ -23,8 +23,13 @@ impl Wavedrom {
         let config_signals: &Vec<config::Signal> = &config.signals;
 
         for (signal) in config_signals {
-			let signal_name = &signal.name;
+			let mut signal_name = signal.name.clone();
             let vcd_signal: &crate::vcd::VCD = vcd.find_signal(&signal_name).expect("Could not find signal in VCD");
+			for config_signal in config_signals {
+				if config_signal.name == signal_name {
+					signal_name = config_signal.rename.clone();
+				}
+			}
 			vcd_signals.push((signal_name.clone(), vcd_signal));
         }
 
@@ -41,6 +46,8 @@ impl Wavedrom {
         }
         let mut wavedrom_signal_vec: Vec<wavedrom::Signal> = Vec::new();
 		for (signal_name, signal) in wavedrom_signals {
+			// if signal_name in config.signals, then rename it
+			let mut signal_name = signal_name.clone();
 			let clocks = &config.clocks;
 			if clocks.contains_key(&signal_name) {
 				let mut new_clock_wave: String = String::new();
