@@ -1,48 +1,62 @@
 {
     "signals": {
         "clock": {
-            "rename": "clock"
+            "rename": "clock",
+            "display": "binary"
         },
         "reset": {
-            "rename": "reset"
+            "rename": "reset",
+            "display": "binary"
         },
         "io_apb_PSEL": {
-            "rename": "PSEL"
+            "rename": "PSEL",
+            "display": "binary"
         },
         "io_apb_PENABLE": {
-            "rename": "PENABLE"
+            "rename": "PENABLE",
+            "display": "binary"
         },
         "io_apb_PWRITE": {
-            "rename": "PWRITE"
+            "rename": "PWRITE",
+            "display": "binary"
         },
         "io_apb_PADDR": {
-            "rename": "PADDR"
+            "rename": "PADDR",
+            "display": "binary"
         },
         "io_apb_PWDATA": {
-            "rename": "PWDATA"
+            "rename": "PWDATA",
+            "display": "binary"
         },
         "io_apb_PRDATA": {
-            "rename": "PWRITE"
+            "rename": "PWRITE",
+            "display": "binary"
         },
         "io_apb_PREADY": {
-            "rename": "PREADY"
+            "rename": "PREADY",
+            "display": "binary"
         },
         "io_apb_PSLVERR": {
-            "rename": "PSLVERR"
+            "rename": "PSLVERR",
+            "display": "binary"
         },
         "io_in": {
-            "rename": "in"
+            "rename": "in",
+            "display": "binary"
         },
         "io_out": {
-            "rename": "out"
+            "rename": "out",
+            "display": "binary"
         },
         "io_enable": {
-            "rename": "enable"
+            "rename": "enable",
+            "display": "binary"
         },
         "io_irq": {
-            "rename": "irq"
+            "rename": "irq",
+            "display": "binary"
         }
     },
-    "time_start": 0,
-    "time_end": 10
+    "time_start": 8,
+    "time_end": 22
 }

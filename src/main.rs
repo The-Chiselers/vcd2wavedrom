@@ -1,13 +1,12 @@
 mod args;
 mod config;
-
-use args::*;
+mod vcd;
+mod wavedrom;
 
 fn main() {
-    let args: Args = read_args();
-    let config: config::Config = config::read_config(&args.config_file);
-    // let config: config::Config = config::example_config();
-    // let config_string: String = serde_json::to_string_pretty(&config).expect("Could not serialize config");
-    // println!("{}", config_string);
-    println!("{:?}", config);
+    let args: args::Args = args::read_args();
+    let config: config::Config = config::Config::from_file(&args.config_file);
+    let vcd: vcd::VCD = vcd::VCD::from_file(&args.vcd_file);
+    let wavedrom: wavedrom::Wavedrom = wavedrom::Wavedrom::from_vcd(&vcd, &config);
+    println!("{}", serde_json::to_string_pretty(&wavedrom).unwrap());
 }

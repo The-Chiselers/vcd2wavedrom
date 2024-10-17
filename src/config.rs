@@ -4,8 +4,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
     pub signals: HashMap<String, Signal>,
-    pub time_start: u32,
-    pub time_end: u32,
+    pub time_start: usize,
+    pub time_end: usize,
+}
+
+impl Config {
+    pub fn from_file(config_file: &str) -> Config {
+        let config_string: String = std::fs::read_to_string(config_file).expect("Could not read config file");
+        let config: Config = serde_json::from_str(&config_string).expect("Could not parse config file");
+        config
+    }
 }
 
 // #[derive(Debug, Deserialize, Serialize)]
@@ -18,11 +26,6 @@ pub struct Signal {
     pub rename: String,
 }
 
-pub fn read_config(config_file: &str) -> Config {
-    let config_string: String = std::fs::read_to_string(config_file).expect("Could not read config file");
-    let config: Config = serde_json::from_str(&config_string).expect("Could not parse config file");
-    config
-}
 
 // pub fn example_config() -> Config {
 //     let mut signals = HashMap::new();
