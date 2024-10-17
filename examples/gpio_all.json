@@ -57,6 +57,9 @@
             "display": "binary"
         }
     },
+    "clocks": {
+        "clock": "clock"
+    },
     "time_start": 8,
     "time_end": 22
 }
