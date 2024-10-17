@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub signals: HashMap<String, Signal>,
 	pub clocks: HashMap<String, String>,
-    pub time_start: usize,
-    pub time_end: usize,
+    pub time_start: Option<usize>,
+    pub time_end: Option<usize>,
 }
 
 impl Config {

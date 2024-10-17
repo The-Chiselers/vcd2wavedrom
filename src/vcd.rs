@@ -20,6 +20,26 @@ impl VCD {
         vcd
     }
 
+	pub fn max_time(&self) -> usize {
+		let mut max_time: usize = 0;
+		if let Some(data) = &self.data {
+			for (time, _) in data {
+				if *time as usize > max_time {
+					max_time = *time as usize;
+				}
+			}
+		}
+		if let Some(children) = &self.children {
+			for child in children {
+				let child_max_time = child.max_time();
+				if child_max_time > max_time {
+					max_time = child_max_time;
+				}
+			}
+		}
+		max_time
+	}
+
     pub fn find_signal(&self, signal_name: &str) -> Option<&VCD> {
         if self.name == signal_name {
 			// if signal_name == "reset" {

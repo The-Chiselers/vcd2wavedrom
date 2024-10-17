@@ -32,7 +32,7 @@ impl Wavedrom {
         let mut wavedrom_signals: std::collections::HashMap<String, wavedrom::Signal> = std::collections::HashMap::new();
         for (signal_name, vcd_signal) in vcd_signals {
 			// println!("Signal name: {signal_name}\n");
-            let wave_vec: Vec<crate::vcd::WaveUnit> = vcd_signal.read_to_array(config.time_start, config.time_end).expect("Could not read signal to array");
+            let wave_vec: Vec<crate::vcd::WaveUnit> = vcd_signal.read_to_array(config.time_start.unwrap(), config.time_end.unwrap()).expect("Could not read signal to array");
             let mut signal: wavedrom::Signal = wavedrom::Signal::new(signal_name.clone());
 			for wave_unit in wave_vec {
 				signal.add_wave_unit(wave_unit);
