@@ -16,6 +16,6 @@ fn main() {
 	}
 
     let wavedrom: wavedrom::Wavedrom = wavedrom::Wavedrom::from_vcd(&vcd, &config);
-	println!("Wavedrom: {:?}", wavedrom);
+	// println!("Wavedrom: {:?}", wavedrom);
     println!("{}", serde_json::to_string_pretty(&wavedrom).unwrap());
 }
